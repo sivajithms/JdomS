@@ -9,7 +9,7 @@ const generateNewCard = (taskData) => {
     <div class="card">
       <div class="card-header d-flex justify-content-end gap-2">
         <button type="button" class="btn btn-outline-success"><i class="fas fa-pencil-alt"></i></button>
-        <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+        <button type="button" class="btn btn-outline-danger" onclick="removeCard(${taskData.id})"><i class="fas fa-trash-alt"></i></button>
       </div>
       <div class="card-body">
         <img
@@ -26,18 +26,15 @@ const generateNewCard = (taskData) => {
 }
 
 
-
 const loadInitialCardData = () => {
   // Retrieve the card data from localStorage
   const getCardData = localStorage.getItem('tasky');
 
   // Parse the card data into an array of objects
   const cards = JSON.parse(getCardData);
-  console.log(cards);
 
   // Iterate over each card object in the array
   cards.card.map((cardObj) => {
-    console.log('card obj', cardObj);
     // Generate HTML for the card object and insert it into the taskContainer element
     taskContainer.insertAdjacentHTML("beforeend", generateNewCard(cardObj));
     globalStorage.push(cardObj);
@@ -46,7 +43,6 @@ const loadInitialCardData = () => {
 
 
 const saveChanges = () => {
-  console.log('gljbal',globalStorage);
   const taskData = {
     id: `${Date.now()}`,
     imageUrl: document.getElementById('imageurl').value,
@@ -59,3 +55,16 @@ const saveChanges = () => {
   globalStorage.push(taskData);
   localStorage.setItem("tasky", JSON.stringify({ card: globalStorage }))
 };
+
+const removeCard = (id) => {
+  console.log(id);
+  let taskId = id.toString();
+  let removeTask = globalStorage.filter((task) => task.id !== taskId);
+  console.log(removeTask);
+  globalStorage = removeTask
+  localStorage.setItem("tasky", JSON.stringify({ card: globalStorage }))
+  let cardElement = document.getElementById(id);
+  if (cardElement) {
+    cardElement.remove();
+  }
+}
